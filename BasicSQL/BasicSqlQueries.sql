@@ -42,16 +42,17 @@ WHERE Student_Id = 5;
 ----Section-1 Quering data----
 ----retrieve data from a single table----
 select * from Student;
+
 select FirstName,State from Student;
----SQL Server SELECT – retrieve some columns of a table example
+
 select FirstName,LastName,Email from Student;
----sort the result using where clause
+---using where clause
 select * from Student WHERE State='Maharashtra';
----sort the result set based on one or more columns using ORDER BY clause
+---using ORDER BY clause
 select * from Student WHERE State='Maharashtra' ORDER BY FirstName;
----group rows into groups using the GROUP BY clause
+---using the GROUP BY clause
 select City, COUNT (*) from Student WHERE State='Maharashtra' GROUP BY City ORDER BY City;
---- filter groups based on one or more conditions using the HAVING clause
+---using the HAVING clause
 select City, COUNT (*) from Student WHERE State='Maharashtra' GROUP BY City HAVING COUNT (*) > 1 ORDER BY City;
 
 ----Section-2 Sorting data------
@@ -74,9 +75,8 @@ select top 5 FirstName,Address from Student order by Address desc;
 
 select top 20 percent FirstName,Address from Student order by Address desc;
 
-
 -----Section-4 Filtering data-----
----distinct is used to return only distinct (different) values
+---distinct is used to return only different values
 select distinct FirstName from Student order by FirstName;
 select DISTINCT City from Student ORDER BY City;
 
@@ -88,4 +88,104 @@ select Student_Id,FirstName,LastName,State from Student WHERE Student_Id = 3 ORD
 select Student_Id,FirstName,LastName,State from Student WHERE Student_Id = 1 AND City = 'Pune' ORDER BY Address DESC;
 
 select Student_Id,FirstName,LastName,State from Student WHERE Student_Id = 2 OR City = 'Pune' ORDER BY Address DESC;
+
+---SQL AND, OR and NOT Operators
+SELECT * FROM Student WHERE City='Pune' AND City='Pune';
+
+SELECT * FROM Student WHERE City='Chennai' OR City='Pune';
+
+SELECT * FROM Student WHERE NOT City='Pune';
+
+SELECT * FROM Student WHERE City='Pune' AND (City='Pune' OR City='Chennai');
+
+SELECT * FROM Student WHERE NOT City='Pune' AND NOT City='Nashik';
+
+----using LIKE
+select FirstName,LastName from Student WHERE FirstName LIKE 'S%' ORDER BY LastName ;
+
+select FirstName,LastName from Student WHERE FirstName LIKE '%a' ORDER BY LastName ;
+
+select FirstName,LastName from Student WHERE FirstName LIKE '%na' ORDER BY LastName ;
+
+select FirstName,LastName from Student WHERE LastName LIKE 'j%v' ORDER BY FirstName ;
+
+------Column and Table Aliases
+select FirstName + ' ' + LastName AS 'Full Name' from Student ORDER BY FirstName;
+
+SELECT FirstName AS Name, LastName AS [Both Name] FROM Student;
+
+-----Section-5 Joining tables--------
+----create employee table--
+CREATE TABLE Employees(
+Employee_id int, 
+Employee_name varchar(250),
+ Employee_DOB date, 
+ Department_ID int);
+
+ ----create department table
+ CREATE TABLE Departments(
+ Department_id int,
+ Department_Name varchar(250));
+
+ -- Insert values into departments table
+INSERT INTO Departments(Department_id,Department_Name)
+VALUES(1,'Human Resources'),
+(2,'Development'), 
+(3,'Sales'),
+(4, 'Technical Support');
+ 
+ select * from Departments;
+
+-- Insert values into employees table
+INSERT INTO Employees(Employee_id,Employee_name, Employee_DOB,Department_ID)
+VALUES (1,'Saguna Ukade','1997-01-01',1),
+       (2,'Amruta Jadhav','1990-01-01',1),
+       (3,'Raghav Shelke','1999-01-01',2),
+       (4,'Pallavi Pawar','1979-01-01',3),
+       (5,'Rudra Pawar','1986-01-01',4);  
+
+select * from Employees;
+
+---inner join----
+SELECT Employee_id,Employee_name, Employee_DOB, Department_Name
+FROM Departments INNER JOIN Employees
+ON Departments.Department_id = Employees.Department_ID;
+
+----left join----
+SELECT Employee_id,Employee_name, Employee_DOB, Department_Name
+FROM Employees LEFT JOIN Departments
+ON Departments.Department_id = Employees.Department_ID;
+
+----right join---
+SELECT Employee_id,Employee_name, Employee_DOB, Department_Name
+FROM Employees RIGHT JOIN Departments
+ON Departments.Department_id = Employees.Department_ID;
+
+-----cross join---
+SELECT Employee_id,Employee_name, Employee_DOB, Department_Name
+FROM Employees CROSS JOIN Departments;
+ 
+-----Set Operators----
+---Union:combine the row data vertically---
+SELECT Department_ID FROM Employees
+UNION
+SELECT Department_id FROM Departments
+ORDER BY Department_ID;
+----Union All---
+SELECT Department_ID FROM Employees
+UNION ALL
+SELECT Department_id FROM Departments
+ORDER BY Department_ID;
+----Intersect:returns the intercetion of two queries---
+SELECT Department_ID FROM Employees
+INTERSECT
+SELECT Department_id FROM Departments
+ORDER BY Department_ID;
+---Except:returns result from first table witch doesnt match ---
+SELECT Department_id
+FROM Departments
+EXCEPT
+SELECT Department_id
+FROM Employees;
+
 
