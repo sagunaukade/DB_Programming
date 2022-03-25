@@ -1,109 +1,80 @@
+----existing database-----
+use DB_Programming;
+Select * from Student;
+Select * from Employees;
+Select * from Departments;
 ------Section-1 Create Stored Procedures----------
+---Stored procedure is stored sql queries 
 CREATE PROCEDURE SelectAllStudents
 AS
-BEGIN
-SELECT * FROM Student
-END
-GO
-
+select *from Student
+GO;
+--execute store procedure---
 EXEC SelectAllStudents
 
+--display all tables using stored procedure
+CREATE PROCEDURE SelectAllTable
+AS
+select *from Student
+select *from Employees
+select *from Departments
+GO;
+EXEC SelectAllTable
+-----Alter Stored Procedure--
+ALTER PROCEDURE SelectAllStudents
+ AS
+BEGIN
+SELECT 
+FirstName, 
+City
+FROM Student
+ORDER BY City
+END;
+---execute store procedure
+EXEC SelectAllStudents;
 
-CREATE PROCEDURE StudentInfo(
-   @FirstName varchar(255),
-    @LastName varchar(255),
-    @Address varchar(255),
-    @City varchar(255),
-	@State varchar(255),
-	@Email varchar(255)
-)
-As
-Begin
-Insert Into StudentInfo(FirstName,LastName,Address,City,State,Email)values
-('@Saguna','@Ukade','@Shivane','@Pune','@Maharashtra','@sagu11@gmail.com'),
-('@Amruta','@Jadhav','@Shivajinagar','@Pune','@Maharashtra','@amrutaj21@gmail.com'),
-('@Vaishnavi','@Shelke','@Kothrud','@Pune','@Maharashtra','@vaishnavis43@gmail.com'),
-('@Sukalyan','@Dash','@Salapada by pass','@Anandapur','@Andhraprdesh','@sukalyand76@gmail.com'),
-('@Suraj','@Garud','@Hadpsar','@Pune','@Maharashtra','@surag2343@gmail.com'),
-('@Raghav','@Kulkarni','@Chandsi','@Nashik','@Maharashtra','@raghav123@gmail.com')
-End
-EXEC StudentInfo;
-
--------Stored Procedure With One Parameter----
-CREATE PROCEDURE spAllStudents @City varchar(10)
+-----Stored Procedure With One Parameter
+CREATE PROCEDURE AllStud @City nvarchar(30)
 AS
 SELECT * FROM Student WHERE City = @City
 GO
+---execute store procedure
+EXEC AllStud @City = 'Nashik';
 
-EXEC spAllStudents @City = 'Chennai';
-
-------Stored Procedure With Multiple Parameters-----
-CREATE PROCEDURE sp_AllStudents @City varchar(30), @State varchar(10)
+----Stored Procedure With Multiple Parameters
+CREATE PROCEDURE AllStuds @City nvarchar(30), @Address nvarchar(10)
 AS
-SELECT * FROM Student WHERE City = @City AND State = @State
+SELECT * FROM Student WHERE City = @City AND @Address = @Address
 GO
-EXEC sp_AllStudents @City = 'Pune', @State = 'Maharashtra';
+---execute store procedure
+EXEC AllStuds @City = 'Pune', @Address = 'Shivane';
 
-Create procedure SPGetAllStudents   
-as   
-Begin   
- select
-    FirstName ,
-    LastName ,
-    Address,
-    City ,
-	State ,
-	Email
-    from StudentInfo 
-End
 
-EXEC SPGetAllStudents
-
------Stored Procedure to get a single Student Records---
-Create procedure spSelectAllStudents
-(    
-    @City varchar(255)
-)    
+-----Update Stored procedure----
+Create procedure UpdateStudent     
+( @FirstName VARCHAR(255),    
+  @LastName VARCHAR(255)  
+)     
 as     
-Begin     
-    SELECT * FROM SelectAllStudents WHERE City= @City
+begin     
+Update Student      
+set FirstName=@FirstName,     
+    LastName=@LastName        
+	where Student_Id=2
 End
-EXEC spSelectAllStudents
+----Execute stored procedure
+EXEC UpdateStudent @FirstName = 'Saguna',@LastName = 'Ukade';
 
------Alter Stored Procedure-----
-alter proc SelectAllStudents
-as
-begin
-select * from Student where Address='Shivane' and City in('Nashik','Pune')
-end
-go
-
-EXEC spSelectAllStudents
-
----parameter procedure-----
-alter procedure StudentInfo
-@Student_Id int,
-@city varchar(100)
-as
-begin
-select * from Student where Student_Id=@Student_Id or City=@city
-end
-go
-EXEC StudentInfo
-
--------Delete stored procedure---
-
---drop proc ParameterProcedure2
-
-alter proc StudentInfo
-@FirstName varchar(100),
-@LastName varchar(100)
-as
-begin
-select Mobile_No from Student where @FirstName=@FirstName
-select * from Student where Address=@Address
-order by Address 
-end
-go
-
+----Stored Procedure to delete a Student Record---------------------
+Create procedure DeleteStudent   
+(     
+ @Student_id int     
+)     
+as      
+begin     
+Delete from Student where Student_Id=@Student_id     
+End
+----Execute stored procedure
+EXEC DeleteStudent @Student_Id=3;
+Select * from Student;
 
