@@ -49,7 +49,6 @@ GO
 ---execute store procedure
 EXEC AllStuds @City = 'Pune', @Address = 'Shivane';
 
-
 -----Update Stored procedure----
 Create procedure UpdateStudent     
 ( @FirstName VARCHAR(255),    
@@ -87,7 +86,7 @@ IF @@ROWCOUNT=0
    PRINT 'No Employee found with 220000 salary';
 END
 
-
+----IF Statement
 BEGIN 
 SELECT Salary from Employees where Employee_id='1'
 IF @@ROWCOUNT=0
@@ -99,19 +98,6 @@ IF @@TEXTSIZE != 0
 	PRINT 'found departname Name'
 END
 
------IF Else---
-BEGIN
-    DECLARE @x INT = 10,
-            @y INT = 20;
-
-    IF (@x > 0)
-    BEGIN
-        IF (@x < @y)
-            PRINT 'x > 0 and x < y';
-        ELSE
-            PRINT 'x > 0 and x >= y';
-    END			
-END
 ---IF Else----
 DECLARE @Number INT;  
 SET @Number = 50;  
@@ -128,7 +114,6 @@ GO
 
 ----WHILE 
 DECLARE @counter INT = 1;
-
 WHILE @counter <= 5
 BEGIN
     PRINT @counter;
@@ -137,20 +122,17 @@ END
 ----While loop
 DECLARE @num1 INT;
 SET @num1 = 0;
-
 WHILE @num1 <= 10
 BEGIN
    PRINT 'Print num1 inside while loop';
    SET @num1 = @num1 + 1;
 END;
-
 PRINT 'Done while loop on num1 ';
 GO
 
 ---Break statement
 DECLARE @num1 INT;
 SET @num1 = 0;
-
 WHILE @num1 <= 10
 BEGIN
 if @num1=3
@@ -211,17 +193,6 @@ END TRY
 BEGIN CATCH
 SELECT
  ERROR_MESSAGE()
-END CATCH
------try catch
-BEGIN TRY
-	SELECT 10/0 AS Result;
-END TRY
-BEGIN CATCH
-	SELECT ERROR_MESSAGE() AS [Error Message]
-	      ,ERROR_LINE() AS ErrorLine
-	      ,ERROR_NUMBER() AS [Error Number]  
-              ,ERROR_SEVERITY() AS [Error Severity]  
-              ,ERROR_STATE() AS [Error State]  
 END CATCH
 
 ----RAISERROR
