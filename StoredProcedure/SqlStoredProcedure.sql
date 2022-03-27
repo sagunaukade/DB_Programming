@@ -32,6 +32,52 @@ ORDER BY City
 END;
 ---execute store procedure
 EXEC SelectAllStudents;
+---Create Table--
+Create table PersonDetail(   
+Person_Id int IDENTITY(1,1) NOT NULL,   
+Name varchar(20) NOT NULL,   
+City varchar(20) NOT NULL,   
+Country varchar(20) NOT NULL,   
+Gender varchar(6) NOT NULL  
+)
+select * from PersonDetail;
+
+-----Stored Procedure to insert a PersonDetails Record
+create procedure spGetPersonDetail
+(@Name VARCHAR(20),    
+ @City VARCHAR(20),   
+ @Country VARCHAR(20),   
+ @Gender VARCHAR(6)   
+)   
+as    
+Begin    
+Insert into PersonDetail(Name,City,Country, Gender) Values (@Name,@City,@Country, @Gender)    
+End
+---execute stored procedure
+EXEC spGetPersonDetail @Name='@Name', @City='@city', @Country='@Country', @Gender='@gender';
+SELECT * FROM PersonDetail;
+
+---Stored Procedure to view all Student Records
+Create procedure spGetAllStudent   
+as   
+Begin   
+select Student_Id, FirstName, LastName, Address, City from Student   
+End
+---execute procedure
+EXEC spGetAllStudent
+select * from Student;
+
+---Stored Procedure to get a single Student Records
+Create procedure spGetStudentById
+(    
+    @Student_Id int
+)    
+as     
+Begin     
+    SELECT * FROM Student WHERE Student_Id= @Student_Id
+End
+---execute procedure
+EXEC spGetStudentById 4;
 
 -----Stored Procedure With One Parameter
 CREATE PROCEDURE AllStud @City nvarchar(30)
@@ -77,6 +123,33 @@ End
 EXEC DeleteStudent @Student_Id=3;
 Select * from Student;
 
+------Rename Table Name 
+EXEC sp_rename 'Employees', 'Employee'
+select * from Employee;
+
+------Variables
+DECLARE @Marks bigint;
+SET @Marks = 99;
+SELECT FirstName, LastName, City FROM  Student
+WHERE Marks = @Marks
+ORDER BY FirstName;
+
+----Output Parameters
+create procedure spGetStudentByCity
+@City varchar (255),
+---output parameter is return value
+@Student_Count int output
+as
+begin
+select @Student_Count=count(Student_id) from Student
+where City=@City
+end
+
+----declare variable for catch value Student_count
+declare @TotalStudent int
+EXEC spGetStudentByCity 'Pune' 
+select @TotalStudent As StudentCity; 
+
 ----Section-2 Control-of-flow statements
 ---BEGIN END--
 ----If statements
@@ -88,7 +161,7 @@ END
 
 ----IF Statement
 BEGIN 
-SELECT Salary from Employees where Employee_id='1'
+SELECT Salary from Employee where Employee_id='1'
 IF @@ROWCOUNT=0
    PRINT 'No Employee found with 220000 salary';
 END
@@ -99,18 +172,19 @@ IF @@TEXTSIZE != 0
 END
 
 ---IF Else----
-DECLARE @Number INT;  
-SET @Number = 50;  
-IF @Number > 100  
-   PRINT 'The number is largest';  
-ELSE   
-   BEGIN  
-      IF @Number < 10  
-      PRINT 'The number is smallest';  
-   ELSE  
-      PRINT 'The number is medium';  
-   END ;  
-GO
+DECLARE @Marks int;
+BEGIN 
+select @Marks =count(student_id)
+from Student
+END
+IF @Marks<75
+BEGIN
+	Print 'Highest marks'
+END
+ELSE
+BEGIN
+	PRINT 'Lowest marks'
+END
 
 ----WHILE 
 DECLARE @counter INT = 1;
@@ -120,39 +194,54 @@ BEGIN
     SET @counter = @counter + 1;
 END
 ----While loop
-DECLARE @num1 INT;
-SET @num1 = 0;
-WHILE @num1 <= 10
-BEGIN
-   PRINT 'Print num1 inside while loop';
-   SET @num1 = @num1 + 1;
-END;
-PRINT 'Done while loop on num1 ';
-GO
+DECLARE @Marks int;
+BEGIN 
+select @Marks =count(Student_Id)
+from Student
+END
+While @Marks<=60
+BEGIN 
+	SET @Marks=@Marks+20;
+	PRINT @Marks;
+	IF(@Marks = 20)
+	BREAK;
+END
 
 ---Break statement
-DECLARE @num1 INT;
-SET @num1 = 0;
-WHILE @num1 <= 10
-BEGIN
-if @num1=3
-break;
-else
-   PRINT 'Print num1 inside while loop';
-   SET @num1 = @num1 + 1;
-END;
-PRINT 'Done while loop in num1 ';
-GO
+DECLARE @Marks int;
+BEGIN 
+select @Marks =count(Student_Id)
+from Student
+END
+While @Marks<=60
+BEGIN 
+	SET @Marks=@Marks+20;
+	PRINT @Marks;
+	IF(@Marks = 20)
+	BREAK;
+END
 
 ---Continue
 DECLARE @Number INT = 0;
-
 WHILE @Number < 5
 BEGIN
     SET @Number = @Number + 1;
     IF @Number = 3
         CONTINUE;	
     PRINT @Number;
+END
+---Continue
+DECLARE @Marks int;
+BEGIN 
+select @Marks =count(Student_Id)
+from Student
+END
+While @Marks<=60
+BEGIN 
+	SET @Marks=@Marks+20;
+	PRINT @Marks;
+	IF(@Marks = 20)
+	CONTINUE;
 END
 
 ----WHILE Loop with CONTINUE and BREAK statements
@@ -185,7 +274,7 @@ END CATCH
 DECLARE @A int;
 BEGIN 
 select @A =count(Salary)
-from Employees
+from Employee
 END
 BEGIN TRY
 	SET @A = @A/0; 
@@ -209,7 +298,7 @@ EXEC sp_dropmessage @msgnum = 50001;
 
 ----Using THROW 
 ---Using THROW statement to raise an exception
-THROW 50005, N'An error occurred', 1;
+THROW 50005, 'An error occurred', 1;
 ----Create table t1
  CREATE TABLE t1(
     id int primary key
@@ -224,6 +313,8 @@ BEGIN CATCH
     PRINT('Raise the caught error again');
     THROW;
 END CATCH
+
+Select * from t1;
 
 
 
