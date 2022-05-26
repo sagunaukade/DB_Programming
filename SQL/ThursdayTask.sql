@@ -1,0 +1,34 @@
+--CURSOR 
+SELECT * FROM EmployeeS
+SP_HELP_EMPLOYEES
+--CREATE CURSOR
+BEGIN
+DECLARE @EMP_ID INT;
+DECLARE @NAME VARCHAR(100);
+DECLARE @SALARY INT;
+DECLARE EMPCUR CURSOR FOR
+SELECT EMP_ID ,NAME,SALARY FROM Employees WHERE Designation='HR';
+OPEN EMPCUR
+FETCH NEXT FROM EMPCUR INTO @EMP_ID,@NAME,@SALARY;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+if @salary>=40000
+begin
+set @SALARY=@SALARY+6;
+end
+else
+begin
+set @SALARY=@SALARY+10;
+end
+update Employees set salary =@salary where Emp_Id =@EMP_ID;
+PRINT @NAME + ' now earns ' + cast(@salary as varchar)
+--PRINT @SALARY;
+FETCH NEXT FROM EMPCUR INTO @EMP_ID, @NAME, @SALARY;
+END
+CLOSE EMPCUR;
+DEALLOCATE EMPCUR;
+END;
+
+select * from Employees where Designation='HR';
+
+SP_HELP STUDENT
